@@ -6,8 +6,23 @@ package edu.isu.cs.cs2263;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.*;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
-public class App {
+public class App extends Application {
     private static final String file = "students.obj";
 
     public static void main(String[] args) {
@@ -17,8 +32,55 @@ public class App {
         if (students == null || students.size() < 1) System.out.println("Couldn't read from file or create a new one");
         else {
             //ready for the GUI to do its thing
-
+            Application.launch(args);
         }
+    }
+
+    public void start(Stage stage) throws Exception {
+        stage.setTitle("Student Course List");
+
+        // Student List
+        ObservableList<Student> obsList = FXCollections.observableArrayList();
+        IOManager manager = new IOManager();
+        List<Student> students = manager.readData(file);
+        for(Student s: students) {
+            obsList.add(s);
+        }
+        Label stuLab = new Label("Students");
+        stuLab.setPadding(new javafx.geometry.Insets(5, 0, 5, 0));
+        ListView stuList = new ListView(obsList);
+        VBox studentList = new VBox(stuLab, stuList);
+        studentList.setPrefSize(200, 200);
+
+        // Middle Label
+        Label middleText = new Label(" Is Taking ");
+        VBox middleLabel = new VBox(middleText);
+        middleLabel.setPrefSize(100, 300);
+        middleLabel.setPadding(new javafx.geometry.Insets(120, 10, 0, 10));
+
+        // Course List
+        Label couLab = new Label("Courses");
+        couLab.setPadding(new javafx.geometry.Insets(5, 0, 5, 0));
+        ListView couList = new ListView();
+        VBox courseList = new VBox(couLab, couList);
+        courseList.setPrefSize(200, 200);
+
+        // Button
+        Button button = new Button("Load Courses");
+        HBox btnPane = new HBox(button);
+        btnPane.setPrefSize(50, 20);
+        btnPane.setPadding(new javafx.geometry.Insets(10, 0, 0, 385));
+
+        BorderPane bp = new BorderPane();
+        bp.setBottom(btnPane);
+        bp.setLeft(studentList);
+        bp.setCenter(middleLabel);
+        bp.setRight(courseList);
+        bp.setPadding(new javafx.geometry.Insets(10, 10, 10, 10));
+
+        Scene scene = new Scene(bp, 500, 300);
+        stage.setScene(scene);
+        stage.show();
     }
 
     private static List<Student> studentsInit(IOManager manager) {
