@@ -1,5 +1,8 @@
 package edu.isu.cs.cs2263;
-
+/*
+    Brandon Watkins
+    1/22/2021
+ */
 public class Course {
     private int number;
     private String subject;
