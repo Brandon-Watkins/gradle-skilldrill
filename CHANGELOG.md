@@ -6,9 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] - 2021-01-22
+## [2.0.0] - 2021-01-22
 ### Added
-- Initial files [@Brandon-Watkins](https://github.com/Brandon-Watkins).
+- Added Gson and JavaFX classes, completing my small student course list program. [@Brandon-Watkins](https://github.com/Brandon-Watkins).
 
 ### Changed
 -
@@ -23,4 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -
 
 ### Deprecated
--
+
+## [1.0.0] - 2021-01-22
+### Added
+- Initial files [@Brandon-Watkins](https://github.com/Brandon-Watkins).-
