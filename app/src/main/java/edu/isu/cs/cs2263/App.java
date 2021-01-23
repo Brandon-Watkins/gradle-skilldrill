@@ -3,12 +3,62 @@
  */
 package edu.isu.cs.cs2263;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
+    private static final String file = "students.obj";
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        IOManager manager = new IOManager();
+        List<Student> students = manager.readData(file);
+        if (students == null || students.size() < 1) students = studentsInit(manager);
+        if (students == null || students.size() < 1) System.out.println("Couldn't read from file or create a new one");
+        else {
+            //ready for the GUI to do its thing
+
+        }
+    }
+
+    private static List<Student> studentsInit(IOManager manager) {
+        List<Student> s = new ArrayList<>();
+        s.add(new Student("Isaac", "Griffith", new ArrayList<Course>(Arrays.asList(
+                new Course("CS", 1181, "Computer Science and Programming I"),
+                new Course("ME", 2220, "Engineering Dynamics"),
+                new Course("CS", 2263, "Advanced Object-Oriented Programming"),
+                new Course("CS", 1337, "Systems Programming and Assembly")
+        ))));
+        s.add(new Student("Brandon", "Watkins", new ArrayList<Course>(Arrays.asList(
+                new Course("INFO", 1150, "Software and Systems Architecture"),
+                new Course("CS", 2235, "Data Structures and Algorithms"),
+                new Course("CS", 2263, "Advanced Object-Oriented Programming"),
+                new Course("INFO", 2220, "Web Development"),
+                new Course("CS", 3321, "Systems Analysis and Design")
+        ))));
+        s.add(new Student("Bob", "Sampson", new ArrayList<Course>(Arrays.asList(
+                new Course("INFO", 2220, "Web Development"),
+                new Course("INFO", 4430, "Web Application Development"),
+                new Course("INFO", 4407, "Database Design Implementation")
+        ))));
+        s.add(new Student("Sarah", "James", new ArrayList<Course>(Arrays.asList(
+                new Course("INFO", 4411, "Intermediate Information Assurance"),
+                new Course("CS", 2263, "Advanced Object-Oriented Programming"),
+                new Course("INFO", 2220, "Web Development"),
+                new Course("CS", 1337, "Systems Programming and Assembly")
+        ))));
+        s.add(new Student("Chuck", "Norris", new ArrayList<Course>(Arrays.asList(
+                new Course("ME", 2266, "Symbolic Programming"),
+                new Course("PHYS", 2211, "Engineering Physics"),
+                new Course("CE", 2210, "Engineering Statics")
+        ))));
+        s.add(new Student("One-armed", "Jim", new ArrayList<Course>(Arrays.asList(
+                new Course("MATH", 2240, "Linear Algebra"),
+                new Course("INFO", 3380, "Networking and Virtualization"),
+                new Course("Math", 1187, "Applied Discrete Structures"),
+                new Course("INFO", 4407, "Database Design Implementation")
+        ))));
+        manager.writeData(file, s);
+        return manager.readData(file);
     }
 }
