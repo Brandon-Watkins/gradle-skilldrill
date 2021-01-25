@@ -28,7 +28,6 @@ public class IOManager {
             List<Student> inList = gson.fromJson(input, t);
             ois.close();
             fis.close();
-            System.out.println("Finished reading data from " + file + ".");
             return inList;
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
@@ -47,7 +46,6 @@ public class IOManager {
                 File f = new File(file);
                 if (f.exists() && f.canWrite()) {
                     f.delete();
-                    System.out.println("Deleted file: " + file + " to prepare for new data.");
                 }
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
@@ -57,7 +55,6 @@ public class IOManager {
             oos.writeObject(json);
             oos.close();
             fos.close();
-            System.out.println("Finished writing data to " + file + ".");
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
