@@ -14,24 +14,17 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class App extends Application {
     private static final String file = "students.obj";
+    private List<Student> students;
+    private IOManager manager = new IOManager();
 
     public static void main(String[] args) {
-        IOManager manager = new IOManager();
-        List<Student> students = manager.readData(file);
-        if (students == null || students.size() < 1) students = studentsInit(manager);
-        if (students == null || students.size() < 1) System.out.println("Couldn't read from file or create a new one");
-        else {
-            //ready for the GUI to do its thing
-            Application.launch(args);
-        }
+        Application.launch(args);
     }
 
     public void start(Stage stage) throws Exception {
@@ -39,11 +32,7 @@ public class App extends Application {
 
         // Student List
         ObservableList<Student> obsList = FXCollections.observableArrayList();
-        IOManager manager = new IOManager();
-        List<Student> students = manager.readData(file);
-        for(Student s: students) {
-            obsList.add(s);
-        }
+
         Label stuLab = new Label("Students");
         stuLab.setPadding(new javafx.geometry.Insets(5, 0, 5, 0));
         ListView stuList = new ListView(obsList);
@@ -51,7 +40,7 @@ public class App extends Application {
         studentList.setPrefSize(250, 200);
 
         // Middle Label
-        Label middleText = new Label(" Is Taking ");
+        Label middleText = new Label("");
         VBox middleLabel = new VBox(middleText);
         middleLabel.setPrefSize(100, 300);
         middleLabel.setPadding(new javafx.geometry.Insets(120, 10, 0, 10));
@@ -76,15 +65,54 @@ public class App extends Application {
         bp.setRight(courseList);
         bp.setPadding(new javafx.geometry.Insets(10, 10, 10, 10));
 
-        // Class Lookup Stuff
+        // populate student list
         button.setOnAction(e -> {
-            couList.getItems().clear();
-            Student stu = students.get(students.indexOf(stuList.getSelectionModel().getSelectedItem()));
-            ObservableList<Course> obsList2 = FXCollections.observableArrayList();
-            for(Course c: stu.getCourses()) {
-                obsList2.add(c);
+            students = manager.readData(file);
+            middleText.setText("");
+            try {
+                if (couList != null && couList.getItems() != null) couList.getItems().clear();
+                if (stuList != null && stuList.getItems() != null) stuList.getItems().clear();
+            } catch (Exception ex) {
+                System.out.println(ex);
             }
-            couList.getItems().addAll(obsList2);
+            if (students == null || students.size() < 1) students = studentsInit(manager);
+            if (students == null || students.size() < 1)
+                System.out.println("Couldn't read from file or create a new one");
+            else {
+                obsList.clear();
+                for (Student s : students) {
+                    obsList.add(s);
+                }
+            }
+        });
+
+        // Class Lookup Stuff
+        stuList.getSelectionModel().selectedItemProperty().addListener(e -> {
+            couList.getItems().clear();
+            if (stuList != null && students != null && students.size() > 0) {
+                MultipleSelectionModel msm = stuList.getSelectionModel();
+                if (msm != null) {
+                    Student stu = (Student)msm.getSelectedItem();
+                    if (stu != null) {
+                        ObservableList<Course> obsList2 = FXCollections.observableArrayList();
+                        if (obsList2 != null) {
+                            List<Course> courses = stu.getCourses();
+                            if (courses != null && courses.size() > 0) {
+                                for(Course c: stu.getCourses()) {
+                                    obsList2.add(c);
+                                }
+                                couList.getItems().addAll(obsList2);
+                                middleText.setText(" Is Taking ");
+                                return;
+                            }
+                        }
+                    }
+                    // "load" was probably clicked with a student selected, don't want to leave the error message.
+                    else return;
+                }
+            }
+            middleText.setText("");
+            System.out.println("Couldn't find courses for the selected student.");
         });
 
         Scene scene = new Scene(bp, 700, 300);
